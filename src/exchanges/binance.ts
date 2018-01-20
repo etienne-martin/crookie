@@ -1,7 +1,7 @@
 import * as get from 'lodash/get';
 import * as includes from 'lodash/includes';
 import * as isEmpty from 'lodash/isEmpty';
-import { compareArrays, constructMessage, fetchJSON, sendSlackMessage } from '../helpersV2';
+import { compareArrays, constructMessage, fetchJSON, sendSlackMessage } from '../helpers';
 
 const API_URL = 'https://api.binance.com/api/v1/ticker/allPrices';
 const EXCHANGE = 'Binance';
@@ -57,7 +57,7 @@ async function fetchData(latestData: IData[]): Promise<IData[]> {
   return data;
 }
 
-export async function init(): Promise<void> {
+async function init(): Promise<void> {
   try {
     let latestData: IData[] = await fetchData(null);
 
@@ -68,3 +68,7 @@ export async function init(): Promise<void> {
     console.error(err);
   }
 }
+
+export default {
+  init
+};

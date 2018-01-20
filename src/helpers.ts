@@ -1,6 +1,12 @@
 import * as get from 'lodash/get';
+import * as isEmpty from 'lodash/isEmpty';
 import * as rp from 'request-promise';
 import config from './config';
+
+if (isEmpty(config.webhookUrl)) {
+  console.error('Your slack webhook url could not be found in config.js');
+  process.exit();
+}
 
 export function fetchJSON(uri) {
   const options = { uri, json: true };

@@ -1,3 +1,3 @@
 export default {
-  webhookUrl: ''
+  webhookUrl: process.env.SLACK_WEBHOOK_URL || ''
 };

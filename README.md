@@ -37,6 +37,7 @@ Build the project and test all the features before submitting your pull request.
 ## Authors
 
 * **Etienne Martin** - *Initial work* - [etiennemartin.ca](http://etiennemartin.ca/)
+* **Alex Beauchemin** - *Improvements* - [@AlexBeauchemin](https://github.com/AlexBeauchemin)
 
 ## License
 

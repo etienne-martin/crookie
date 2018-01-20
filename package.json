@@ -3,13 +3,19 @@
   "version": "1.0.0",
   "description": "",
   "author": "Etienne Martin",
-  "main": "index.js",
+  "contributors": [
+    {
+      "name": "Alex Beauchemin",
+      "url": "https://github.com/AlexBeauchemin"
+    }
+  ],
+  "main": "dist/index.js",
   "scripts": {
     "build": "tslint 'src/**/*.ts' && tsc",
-    "start": "npm run build -- -w",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "npm run build -- -w"
   },
   "dependencies": {
+    "figlet": "^1.2.0",
     "lodash": "^4.17.4",
     "node-fetch": "^1.7.3",
     "request": "^2.83.0",
