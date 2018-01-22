@@ -6,24 +6,8 @@ A slack bot that sends notifications whenever new cryptocurrency is added to Bin
 1. Go on https://api.slack.com/apps and create a new slack app.
 2. In the "Add features and functionality" dropdown, click on "Incoming Webhooks" and turn that feature ON.
 3. Click on "Add New Webhook to Workspace" and select the channel where you want your notifications to be delivered.
-4. Scroll down, copy the Webhook URL in your clipboard and keep it for later.
-5. Open a terminal window to edit environment variables:
-
-```bash
-nano ~/.bash_profile
-```
-
-6. Add the Webhook URL to your `.bash_profile`:
-
-```bash
-export SLACK_WEBHOOK_URL="https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX"
-```
-
-7. Make sure your system loads in the new variables:
-
-```bash
-source ~/.bash_profile
-```
+4. Scroll down, copy the Webhook URL in your clipboard and keep it for step 5.
+5. Rename the `.env-template` file to `.env` and paste the Webhook URL there (ie: `SLACK_WEBHOOK_URL=https://hooks.slack.com/services/...`)
 
 8. Run `npm install` to install the dependencies.
 

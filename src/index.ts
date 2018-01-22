@@ -1,5 +1,5 @@
 import * as figlet from 'figlet';
-import binance from './exchanges/binance.js';
+import binance from './exchanges/binance';
 
 binance.init();
 
