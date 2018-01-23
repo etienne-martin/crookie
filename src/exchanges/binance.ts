@@ -70,5 +70,6 @@ async function init(): Promise<void> {
 }
 
 export default {
+  fetchData,
   init
 };

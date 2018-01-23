@@ -13,6 +13,15 @@ A slack bot that sends notifications whenever new cryptocurrency is added to Bin
 
 9. Run the server with the following command: `node dist/index.js`.
 
+## Usage with aws lambdas/elasticache
+
+1. Create a redis instance on elasticache
+2. Create a vpc 
+3. Create a role that has access to the vpc
+4. Create a lambda, set `lambda.handler` as the handler, select node 6.10 for the engine and set the SLACK_WEBHOOK_URL and REDIS_URL variable environment.
+5. Assign the correct role and vpc you just created in the lambda configuration
+6. `npm run build-lambda` and upload lambda.zip on your lambda
+
 ## Built with
 
 * [node.js](https://github.com/moment/moment) - Node.js is an open-source, cross-platform JavaScript run-time environment for executing JavaScript code server-side.

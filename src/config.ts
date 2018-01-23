@@ -18,6 +18,7 @@ if (isEmpty(config.webhookUrl)) {
 
 function setConfig() {
   config.webhookUrl = process.env.SLACK_WEBHOOK_URL;
+  config.redisUrl = process.env.REDIS_URL;
 }
 
 function getConfig(key?: string): string | any {

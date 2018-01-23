@@ -12,6 +12,7 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "tslint 'src/**/*.ts' && tsc",
+    "build-lambda": "mkdir lambda && cp -r dist/ lambda && cp package.json lambda && cd lambda; NODE_ENV=production npm i && zip -r lambda.zip *; mv lambda.zip ../; cd ../; rm -rf lambda",
     "start": "npm run build -- -w"
   },
   "dependencies": {
@@ -19,11 +20,13 @@
     "figlet": "^1.2.0",
     "lodash": "^4.17.4",
     "node-fetch": "^1.7.3",
+    "redis": "^2.8.0",
     "request": "^2.83.0",
     "request-promise": "^4.2.2"
   },
   "devDependencies": {
     "@types/node": "^9.3.0",
+    "@types/redis": "^2.8.4",
     "tslint": "^5.9.1",
     "typescript": "^2.6.2"
   }
