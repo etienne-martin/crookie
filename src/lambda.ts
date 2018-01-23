@@ -3,6 +3,7 @@ import * as redis from 'redis';
 import config from './config';
 import binance from './exchanges/binance';
 
+// @ts-ignore
 exports.handler = async (event, context, callback) => {
   const redisOptions: redis.ClientOpts = {
     host: config.get('redisUrl'),
