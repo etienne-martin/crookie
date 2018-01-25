@@ -2,6 +2,7 @@ import * as isEmpty from 'lodash/isEmpty';
 import * as redis from 'redis';
 import config from './config';
 import binance from './exchanges/binance';
+import { compareArrays } from './helpers';
 
 function createRedisClient(): redis.RedisClient {
   const redisOptions: redis.ClientOpts = {
@@ -50,17 +51,18 @@ exports.handler = async (event, context, callback) => {
 
     const latestData: any = await getLatestData(client);
     const data: any = await getData(latestData);
-    await getData(latestData);
-    await saveData(client, data);
+    const diff: string[] = compareArrays(latestData, data, 'symbol');
+    let outputMessage = 'No changes';
+
+    if (!isEmpty(diff)) {
+      await saveData(client, data);
+      outputMessage = 'new crypto on binance: ' + JSON.stringify(diff);
+    }
 
     client.quit();
-    callback(null, 'new data set: ' + JSON.stringify(data));
+    callback(null, outputMessage);
   } catch (err) {
     callback(null, err.message);
     if (client) client.quit();
   }
-
-  // response.statusCode = 200;
-  // response.body = { charge, chargeObject, err };
-  // context.succeed(response);
 };
