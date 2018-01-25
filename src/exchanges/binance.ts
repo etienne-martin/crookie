@@ -9,6 +9,7 @@ const INTERVAL = 10000;
 
 interface IData {
   symbol: string;
+  price: string;
 }
 
 function handleData(newData: IData[], latestData: IData[]): string[] {
@@ -49,7 +50,7 @@ async function sendResponse(diffs: string[]): Promise<void> {
 async function fetchData(latestData: IData[]): Promise<IData[]> {
   const data: IData[] = await fetchJSON(API_URL);
 
-  if (!latestData) return latestData = data;
+  if (!latestData) return data;
 
   const diffs: string[] = handleData(data, latestData);
 

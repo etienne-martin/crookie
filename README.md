@@ -15,12 +15,14 @@ A slack bot that sends notifications whenever new cryptocurrency is added to Bin
 
 ## Usage with aws lambdas/elasticache
 
-1. Create a redis instance on elasticache
-2. Create a vpc 
+1. Create a vpc 
+2. Create a redis instance on elasticache
 3. Create a role that has access to the vpc
 4. Create a lambda, set `lambda.handler` as the handler, select node 6.10 for the engine and set the SLACK_WEBHOOK_URL and REDIS_URL variable environment.
 5. Assign the correct role and vpc you just created in the lambda configuration
-6. `npm run build-lambda` and upload lambda.zip on your lambda
+6. Follow this [blog post](https://medium.com/@philippholly/aws-lambda-enable-outgoing-internet-access-within-vpc-8dd250e11e12) to give your lambda access to internet
+7. Create a CloudWatch events rule to run your lambda like a cron job
+8. `npm run build-lambda` and upload lambda.zip on your lambda
 
 ## Built with
 
