@@ -1,8 +1,24 @@
 import * as isEmpty from 'lodash/isEmpty';
+import * as map from 'lodash/map';
+import * as reduce from 'lodash/reduce';
 import * as redis from 'redis';
 import config from './config';
 import binance from './exchanges/binance';
-import { compareArrays } from './helpers';
+
+interface ITarget {
+  name: string;
+  fetch: (latestData: any[]) => Promise<any[]>;
+}
+
+interface IData {
+  name: string;
+  data: any[];
+}
+
+const KEY: string = 'exchanges';
+const targets: ITarget[] = [
+  { name: 'binance', fetch: binance.fetchData }
+];
 
 function createRedisClient(): redis.RedisClient {
   const redisOptions: redis.ClientOpts = {
@@ -16,21 +32,36 @@ function createRedisClient(): redis.RedisClient {
 
 async function getLatestData(client: redis.RedisClient): Promise<any> {
   return new Promise((resolve, reject) => {
-    client.get('binance', (err, res) => {
+    client.get(KEY, (err, res) => {
       if (err) reject(err);
-      const data = isEmpty(res) ? null : JSON.parse(res);
+      const data: any = isEmpty(res) ? null : JSON.parse(res);
       resolve(data);
     });
   });
 }
 
-function getData(latestData: any): Promise<any> {
-  return binance.fetchData(latestData);
+async function getData(latestData: any): Promise<any> {
+  // TODO: Add a setTimeout to cancel a request if any exchanges isn't responding
+  // So we can get results from other responding exchanges and only skip the exchanges that are unresponsive
+  // TODO: Handle exchange fetch errors
+  const promises: Array<Promise<IData>> = map(targets, async (target: ITarget) => {
+    const data: any[] = await target.fetch(latestData[target.name]);
+    return {
+      name: target.name,
+      data
+    };
+  });
+
+  const exchangesData: IData[] = await Promise.all(promises);
+  return reduce(exchangesData, (res, item) => {
+    res[item.name] = item.data;
+    return res;
+  }, {});
 }
 
-function saveData(client: redis.RedisClient, data: any): Promise<void> {
+function saveData(client: redis.RedisClient, key: string, data: any): Promise<void> {
   return new Promise((resolve, reject) => {
-    client.set('binance', JSON.stringify(data), (err) => {
+    client.set(key, JSON.stringify(data), (err) => {
       if (err) reject(err);
       else resolve();
     });
@@ -51,16 +82,10 @@ exports.handler = async (event, context, callback) => {
 
     const latestData: any = await getLatestData(client);
     const data: any = await getData(latestData);
-    const diff: string[] = compareArrays(latestData, data, 'symbol');
-    let outputMessage = 'No changes';
-
-    if (!isEmpty(diff)) {
-      await saveData(client, data);
-      outputMessage = 'new crypto on binance: ' + JSON.stringify(diff);
-    }
+    await saveData(client, KEY, data);
 
     client.quit();
-    callback(null, outputMessage);
+    callback(null, 'Done.');
   } catch (err) {
     callback(null, err.message);
     if (client) client.quit();
