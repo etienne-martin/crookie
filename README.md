@@ -42,7 +42,9 @@ Build the project and test all the features before submitting your pull request.
 ## Authors
 
 * **Etienne Martin** - *Initial work* - [etiennemartin.ca](http://etiennemartin.ca/) `xrb_3dmrpbcii5d1mi31u8bep317giq7oyp9jmoihuyizb1ynrhqcod6hxwdprnf`
-* **Alex Beauchemin** - *Improvements* - [@AlexBeauchemin](https://github.com/AlexBeauchemin)
+* **Alex Beauchemin** - *Improvements* - [@AlexBeauchemin](https://github.com/AlexBeauchemin) <br />Raiblocks: `xrb_3dmrpbcii5d1mi31u8bep317giq7oyp9jmoihuyizb1ynrhqcod6hxwdprnf` <br />
+ Eth: `0x6a25a9566bf6c2D731ab3b1E3CD0B4D1205D5794`
+ 
 
 ## License
 
