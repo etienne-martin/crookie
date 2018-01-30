@@ -33,12 +33,17 @@ export function compareObject(obj1, obj2) {
 }
 
 export async function sendSlackMessage(message) {
+  const url = config.get('webhookUrl');
   const options = {
     method: 'POST',
-    uri: config.get('webhookUrl'),
+    uri: url,
     body: { text: message },
     json: true
   };
+
+  if (config.env === 'test') {
+    return console.log(message);
+  }
 
   try {
     const response = await rp(options);

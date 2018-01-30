@@ -7,12 +7,17 @@ import binance from './exchanges/binance';
 
 interface ITarget {
   name: string;
-  fetch: (latestData: any[]) => Promise<any[]>;
+  fetch: (latestData: any[]) => Promise<IResponse>;
 }
 
 interface IData {
   name: string;
   data: any[];
+}
+
+interface IResponse {
+  data: any[];
+  diffs: string[];
 }
 
 const KEY: string = 'exchanges';
@@ -41,14 +46,14 @@ async function getLatestData(client: redis.RedisClient): Promise<any> {
 }
 
 async function getData(latestData: any): Promise<any> {
-  // TODO: Add a setTimeout to cancel a request if any exchanges isn't responding
+  // TODO: Add a setTimeout to cancel a request if any exchanges isn't responding (use axios?)
   // So we can get results from other responding exchanges and only skip the exchanges that are unresponsive
   // TODO: Handle exchange fetch errors
   const promises: Array<Promise<IData>> = map(targets, async (target: ITarget) => {
-    const data: any[] = await target.fetch(latestData[target.name]);
+    const res: IResponse = await target.fetch(latestData ? latestData[target.name] : null);
     return {
       name: target.name,
-      data
+      data: res.data
     };
   });
 
@@ -68,16 +73,15 @@ function saveData(client: redis.RedisClient, key: string, data: any): Promise<vo
   });
 }
 
-// @ts-ignore
-exports.handler = async (event, context, callback) => {
+export default async function init(callback): Promise<void> {
   let client: redis.RedisClient;
 
   try {
     client = createRedisClient();
 
     client.on('error', (err) => {
-      callback(null, 'Redis client error: ' + err.message);
       client.quit();
+      callback(err);
     });
 
     const latestData: any = await getLatestData(client);
@@ -85,9 +89,17 @@ exports.handler = async (event, context, callback) => {
     await saveData(client, KEY, data);
 
     client.quit();
-    callback(null, 'Done.');
+    callback(null, data);
   } catch (err) {
-    callback(null, err.message);
+    callback(err);
     if (client) client.quit();
   }
+}
+
+// @ts-ignore
+exports.handler = async function lambda(event, context, callback) {
+  init((err) => {
+    if (err) callback(null, err.message);
+    callback(null, 'Done.');
+  });
 };

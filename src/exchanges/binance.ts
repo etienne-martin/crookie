@@ -7,9 +7,14 @@ const API_URL = 'https://api.binance.com/api/v1/ticker/allPrices';
 const EXCHANGE = 'Binance';
 const INTERVAL = 10000;
 
-interface IData {
+export interface IData {
   symbol: string;
   price: string;
+}
+
+export interface IResponse {
+  data: IData[];
+  diffs: string[];
 }
 
 function handleData(newData: IData[], latestData: IData[]): string[] {
@@ -47,23 +52,25 @@ async function sendResponse(diffs: string[]): Promise<void> {
   console.log(`Slack notification sent successfully for ${EXCHANGE}:`, diffs);
 }
 
-async function fetchData(latestData: IData[]): Promise<IData[]> {
+async function fetchData(latestData: IData[]): Promise<IResponse> {
   const data: IData[] = await fetchJSON(API_URL);
 
-  if (!latestData) return data;
+  if (!latestData) return { data, diffs: null };
 
   const diffs: string[] = handleData(data, latestData);
 
   await sendResponse(diffs);
-  return data;
+  return { data, diffs };
 }
 
 async function init(): Promise<void> {
   try {
-    let latestData: IData[] = await fetchData(null);
+    let res: IResponse = await fetchData(null);
+    let latestData: IData[] = res.data;
 
     setInterval(async () => {
-      latestData = await fetchData(latestData);
+      res = await fetchData(latestData);
+      latestData = res.data;
     }, INTERVAL);
   } catch (err) {
     console.error(err);

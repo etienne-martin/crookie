@@ -28,6 +28,11 @@ A slack bot that sends notifications whenever new cryptocurrency is added to Bin
 7. Create a CloudWatch events rule to run your lambda like a cron job
 8. `npm run build-lambda` and upload lambda.zip on your lambda
 
+## Tests
+
+You can run the test suite to make sure that everything is working correctly with
+`npm test`
+
 ## Built with
 
 * [node.js](https://github.com/moment/moment) - Node.js is an open-source, cross-platform JavaScript run-time environment for executing JavaScript code server-side.
