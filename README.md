@@ -9,9 +9,13 @@ A slack bot that sends notifications whenever new cryptocurrency is added to Bin
 4. Scroll down, copy the Webhook URL in your clipboard and keep it for step 5.
 5. Rename the `.env-template` file to `.env` and paste the Webhook URL there (ie: `SLACK_WEBHOOK_URL=https://hooks.slack.com/services/...`)
 
-6. Run `npm install` to install the dependencies.
+6. (Optional) If you have [NVM](https://github.com/creationix/nvm), install the correct npm version and use it: `nvm install 6.10 && nvm use`
 
-7. Run the server with the following command: `node dist/index.js`.
+7. Run `npm install` to install the dependencies.
+
+8. Build the project: `npm run build`
+
+9. Run the server with the following command: `node dist/index.js` or `npm run serve`.
 
 ## Usage with aws lambdas/elasticache
 

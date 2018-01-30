@@ -13,7 +13,9 @@
   "scripts": {
     "build": "tslint 'src/**/*.ts' && tsc",
     "build-lambda": "mkdir lambda && cp -r dist/ lambda && cp package.json lambda && cd lambda; NODE_ENV=production npm i && zip -r lambda.zip *; mv lambda.zip ../; cd ../; rm -rf lambda",
-    "start": "npm run build -- -w"
+    "serve": "npm run build && node dist/index.js",
+    "start": "npm run build -- -w",
+    "test": "tsc -p tsconfig-test.json && NODE_ENV=test node test/index"
   },
   "dependencies": {
     "dotenv": "^4.0.0",
