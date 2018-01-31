@@ -10,13 +10,20 @@
     }
   ],
   "main": "dist/index.js",
+  "engines": {
+    "node": ">=6.10",
+    "npm": ">=3.10"
+  },
   "scripts": {
+    "preinstall": "npm run version-check",
+    "pretest": "npm run build",
+    "prestart": "npm run version-check",
     "build": "tslint 'src/**/*.ts' && tsc",
     "build-lambda": "mkdir lambda && cp -r dist/ lambda && cp package.json lambda && cd lambda; NODE_ENV=production npm i && zip -r lambda.zip *; mv lambda.zip ../; cd ../; rm -rf lambda",
-    "pretest": "npm run build",
-    "serve": "npm run build && NODE_ENV=production node dist/index.js",
+    "serve": "npm run version-check && npm run build && NODE_ENV=production node dist/index.js",
     "start": "npm run build -- -w",
-    "test": "NODE_ENV=test mocha -w test/"
+    "test": "NODE_ENV=test mocha -w test/",
+    "version-check": "node ./version-check"
   },
   "dependencies": {
     "dotenv": "^4.0.0",
@@ -26,6 +33,7 @@
     "redis": "^2.8.0",
     "request": "^2.83.0",
     "request-promise": "^4.2.2",
+    "semver": "^5.5.0",
     "tslib": "^1.9.0"
   },
   "devDependencies": {

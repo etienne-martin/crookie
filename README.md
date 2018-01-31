@@ -15,7 +15,7 @@ A slack bot that sends notifications whenever new cryptocurrency is added to Bin
 
 8. Build the project: `npm run build`
 
-9. Run the server with the following command: `node dist/index.js` or `npm run serve`.
+9. Run the server with the following command: `npm run serve`.
 
 ## Usage with aws lambdas/elasticache
 

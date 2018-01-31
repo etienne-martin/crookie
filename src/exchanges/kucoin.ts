@@ -58,7 +58,7 @@ async function sendResponse(diffs: string[]): Promise<void> {
   }
 
   const message = constructMessage(diffs, EXCHANGE, (currency) => {
-    return `https://www.kucoin.com/#/trade.pro/ZPT-${currency}`;
+    return `https://www.kucoin.com/#/trade.pro/${currency}`;
   });
 
   await sendSlackMessage(message);
