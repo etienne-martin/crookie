@@ -3,7 +3,13 @@ import * as rp from 'request-promise';
 import config from './config';
 
 export function fetchJSON(uri) {
-  const options = { uri, json: true };
+  const options = {
+    uri,
+    json: true,
+    headers: {
+      'User-Agent': 'Crookie' // We must pass a User-Agent when querying GDAX
+    }
+  };
   return rp(options);
 }
 
