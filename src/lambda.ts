@@ -4,6 +4,7 @@ import * as reduce from 'lodash/reduce';
 import * as redis from 'redis';
 import config from './config';
 import binance from './exchanges/binance';
+import kucoin from './exchanges/kucoin';
 
 interface ITarget {
   name: string;
@@ -22,7 +23,8 @@ interface IResponse {
 
 const KEY: string = 'exchanges';
 const targets: ITarget[] = [
-  { name: 'binance', fetch: binance.fetchData }
+  { name: 'binance', fetch: binance.fetchData },
+  { name: 'kucoin', fetch: kucoin.fetchData }
 ];
 
 function createRedisClient(): redis.RedisClient {
@@ -73,11 +75,11 @@ function saveData(client: redis.RedisClient, key: string, data: any): Promise<vo
   });
 }
 
-export default async function init(callback): Promise<void> {
-  let client: redis.RedisClient;
+export default async function init(callback, defaultClient?: redis.RedisClient): Promise<void> {
+  let client: redis.RedisClient = defaultClient;
 
   try {
-    client = createRedisClient();
+    if (!client) client = createRedisClient();
 
     client.on('error', (err) => {
       client.quit();
