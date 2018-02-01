@@ -19,7 +19,7 @@
     "pretest": "npm run build",
     "prestart": "npm run version-check",
     "build": "tslint 'src/**/*.ts' && tsc",
-    "build-lambda": "mkdir lambda && cp -r dist/ lambda && cp package.json lambda && cd lambda; NODE_ENV=production npm i && zip -r lambda.zip *; mv lambda.zip ../; cd ../; rm -rf lambda",
+    "build-lambda": "mkdir lambda && cp -r dist/ lambda && cp package.json lambda && cp version-check.js lambda && cd lambda; NODE_ENV=production npm i && zip -r lambda.zip *; mv lambda.zip ../; cd ../; rm -rf lambda",
     "serve": "npm run version-check && npm run build && NODE_ENV=production node dist/index.js",
     "start": "npm run build -- -w",
     "test": "NODE_ENV=test mocha -w test/",
