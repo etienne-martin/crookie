@@ -1,30 +1,50 @@
-import * as get from 'lodash/get';
+import * as clone from 'lodash/clone';
 import * as isEmpty from 'lodash/isEmpty';
-import { compareArrays, constructMessage, fetchJSON, sendSlackMessage } from '../helpers';
+import * as map from 'lodash/map';
+import * as pullAll from 'lodash/pullAll';
+import * as uniq from 'lodash/uniq';
+import { constructMessage, fetchJSON, sendSlackMessage } from '../helpers';
 
 const API_URL = 'https://api.gdax.com/products';
 const EXCHANGE = 'GDAX';
 const INTERVAL = 10000;
 
 export interface IData {
-  symbol: string;
-  price: string;
+  id: string;
+  base_currency: string;
+  quote_currency: string;
+  base_min_size: string;
+  base_max_size: string;
+  quote_increment: string;
+  display_name: string;
+  status: string;
+  margin_enabled: boolean;
+  status_message: string | null;
+  min_market_funds: string;
+  max_market_funds: string;
+  post_only: boolean;
+  limit_only: boolean;
+  cancel_only: boolean;
 }
 
 export interface IResponse {
-  data: IData[];
+  data: string[];
   diffs: string[];
 }
 
-function handleData(newData: IData[], latestData: IData[]): string[] {
-  const diffs: string[] = compareArrays(latestData, newData, 'base_currency');
-  const mergedDiffs: string[] = [];
+function getDiff(newData: string[], latestData: string[]): string[] {
+  const diff: string[] = clone(newData); // need to close as pullAll mutate the array
+  pullAll(diff, latestData);
+  return diff;
+}
 
-  if (!get(newData, '[0].base_currency')) throw new Error(`An error occurred while fetching data from ${EXCHANGE}.`);
-  // Skip if nothing changed
-  if (isEmpty(diffs)) return;
+function handleData(data: IData[]): string[] {
+  const rawList: string[] = map(data, (item: IData) => item.base_currency);
+  const list: string[] = uniq(rawList);
 
-  return mergedDiffs;
+  if (isEmpty(list)) throw new Error(`An error occurred while fetching data from ${EXCHANGE}.`);
+
+  return list;
 }
 
 // Send the slack notification
@@ -42,21 +62,22 @@ async function sendResponse(diffs: string[]): Promise<void> {
   console.log(`Slack notification sent successfully for ${EXCHANGE}:`, diffs);
 }
 
-async function fetchData(latestData: IData[]): Promise<IResponse> {
-  const data: IData[] = await fetchJSON(API_URL);
+async function fetchData(latestData: string[]): Promise<IResponse> {
+  const res: IData[] = await fetchJSON(API_URL);
+  const cryptos: string[] = handleData(res);
 
-  if (!latestData) return { data, diffs: null };
+  if (!latestData) return { data: cryptos, diffs: null };
 
-  const diffs: string[] = handleData(data, latestData);
+  const diffs: string[] = getDiff(cryptos, latestData);
 
   await sendResponse(diffs);
-  return { data, diffs };
+  return { data: cryptos, diffs };
 }
 
 async function init(): Promise<void> {
   try {
     let res: IResponse = await fetchData(null);
-    let latestData: IData[] = res.data;
+    let latestData: string[] = res.data;
 
     setInterval(async () => {
       res = await fetchData(latestData);

@@ -4,6 +4,7 @@ import * as reduce from 'lodash/reduce';
 import * as redis from 'redis';
 import config from './config';
 import binance from './exchanges/binance';
+import gdax from './exchanges/gdax';
 import kucoin from './exchanges/kucoin';
 
 interface ITarget {
@@ -24,6 +25,7 @@ interface IResponse {
 const KEY: string = 'exchanges';
 const targets: ITarget[] = [
   { name: 'binance', fetch: binance.fetchData },
+  { name: 'gdax', fetch: gdax.fetchData },
   { name: 'kucoin', fetch: kucoin.fetchData }
 ];
 

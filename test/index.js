@@ -26,9 +26,9 @@ describe('Retrieving exchanges data', () => {
     }, fakeRedisClient);
   });
 
-  describe('Redis', () => {
-
-  });
+  // describe('Redis', () => {
+  //
+  // });
 
   describe('Binance', () => {
     it('should return data', () => {
@@ -51,6 +51,24 @@ describe('Retrieving exchanges data', () => {
 
     it('should be an array of string', () => {
       assert.equal(typeof(get(data, 'kucoin[0]')), 'string');
+    });
+
+    it('should not be pairings', () => {
+      assert.equal(get(data, 'kucoin[0]').indexOf('-'), -1);
+    });
+  });
+
+  describe('GDAX', () => {
+    it('should return data', () => {
+      assert.notEqual(get(data, 'gdax', []).length, 0);
+    });
+
+    it('should be an array of string', () => {
+      assert.equal(typeof(get(data, 'gdax[0]')), 'string');
+    });
+
+    it('should not be pairings', () => {
+      assert.equal(get(data, 'gdax[0]').indexOf('-'), -1);
     });
   });
 });

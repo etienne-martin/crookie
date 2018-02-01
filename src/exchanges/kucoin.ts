@@ -1,7 +1,8 @@
 import * as clone from 'lodash/clone';
 import * as isEmpty from 'lodash/isEmpty';
-import * as map from 'lodash/map';
 import * as pullAll from 'lodash/pullAll';
+import * as reduce from 'lodash/reduce';
+import * as uniq from 'lodash/uniq';
 import { constructMessage, fetchJSON, sendSlackMessage } from '../helpers';
 
 const API_URL = 'https://kitchen-4.kucoin.com/v1/market/open/symbols?market=&c=&lang=en_US';
@@ -47,7 +48,12 @@ function getDiff(newData: string[], latestData: string[]): string[] {
 }
 
 function handleData(data: IData[]): string[] {
-  return map(data, (item: IData) => item.symbol);
+  const list: string[] = reduce(data, (sum: string[], item: IData) => {
+    const pair: string[] = item.symbol.split('-');
+    return sum.concat(pair);
+  }, []);
+
+  return uniq(list);
 }
 
 // Send the slack notification
